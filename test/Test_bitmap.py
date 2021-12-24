@@ -5,8 +5,13 @@ from PIL import Image
 import numpy as np
 import os
 base_dir = os.path.join("C:\\Users\\ohrwu\\Downloads")
-freq = {np.array(Image.open(os.path.join(base_dir, 'hops.jpg'))): f for i, f in zip(["hops.jpg", "hops2.jpg"], [0.8, 0.2])}
 
+# need to order input! list of tuples
+
+# [((Bitmap, Shape of Bitmap with #), Frequency)]
+freq = [((np.array(Image.open(os.path.join(base_dir, i))), s), f) for (s, i, f) in zip(["###", "#"],["Hops.jpg", "Hops_2.jpg"], [0.8, 0.2])]
+# freq = [((i[0], i[1]), j) for i, j in freq]
+# set freq
 
 wc = WordCloud()
 wc.generate_from_bitmap_frequencies(frequencies=freq)

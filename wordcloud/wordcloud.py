@@ -570,7 +570,7 @@ class WordCloud(object):
 
         """
         # make sure frequencies are sorted and normalized
-        frequencies = sorted(frequencies.items(), key=itemgetter(1), reverse=True)
+        # frequencies = sorted(frequencies.items(), key=itemgetter(1), reverse=True)
         if len(frequencies) <= 0:
             raise ValueError("We need at least 1 word to plot a word cloud, "
                              "got %d." % len(frequencies))
@@ -615,7 +615,7 @@ class WordCloud(object):
                 # we only have one word. We make it big!
                 font_size = self.height
             else:
-                self.generate_from_frequencies(dict(frequencies[:2]),
+                self.generate_from_frequencies(frequencies[:2],
                                                max_font_size=self.height)
                 # find font sizes
                 sizes = [x[1] for x in self.layout_]
@@ -635,9 +635,9 @@ class WordCloud(object):
         else:
             font_size = max_font_size
 
-        # we set self.words_ here because we called generate_from_frequencies
-        # above... hurray for good design?
-        self.words_ = dict(frequencies)
+        # # we set self.words_ here because we called generate_from_frequencies
+        # # above... hurray for good design?
+        # self.words_ = dict(frequencies)
 
         if self.repeat and len(frequencies) < self.max_words:
             # pad frequencies with repeating words.
@@ -670,7 +670,7 @@ class WordCloud(object):
                 transposed_font = ImageFont.TransposedFont(
                     font, orientation=orientation)
                 # get size of resulting text
-                box_size = draw.textsize(word, font=transposed_font)
+                box_size = draw.textsize(word[1], font=transposed_font)
                 # find possible places using integral image:
                 result = occupancy.sample_position(box_size[1] + self.margin,
                                                    box_size[0] + self.margin,
@@ -696,12 +696,12 @@ class WordCloud(object):
             # actually draw the text
             
             # TODO:
-            draw.bitmap((y, x), word, fill="white")
+            draw.bitmap((y, x), word[0], fill="white")
             # draw.text((y, x), word, fill="white", font=transposed_font)
             positions.append((x, y))
             orientations.append(orientation)
             font_sizes.append(font_size)
-            colors.append(self.color_func(word, font_size=font_size,
+            colors.append(self.color_func(word[0], font_size=font_size,
                                           position=(x, y),
                                           orientation=orientation,
                                           random_state=random_state,
