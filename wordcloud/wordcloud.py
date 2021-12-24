@@ -835,6 +835,29 @@ class WordCloud(object):
 
         return self._draw_contour(img=img)
 
+    def to_image_bitmap(self):
+        self._check_generated()
+        if self.mask is not None:
+            width = self.mask.shape[1]
+            height = self.mask.shape[0]
+        else:
+            height, width = self.height, self.width
+
+        img = Image.new(self.mode, (int(width * self.scale),
+                                    int(height * self.scale)),
+                        self.background_color)
+        draw = ImageDraw.Draw(img)
+        for (word, count), font_size, position, orientation, color in self.layout_:
+            font = ImageFont.truetype(self.font_path,
+                                      int(font_size * self.scale))
+            transposed_font = ImageFont.TransposedFont(
+                font, orientation=orientation)
+            pos = (int(position[1] * self.scale),
+                   int(position[0] * self.scale))
+            draw.bitmap(pos, word, fill=color, font=transposed_font)
+
+        return self._draw_contour(img=img)
+
     def recolor(self, random_state=None, color_func=None, colormap=None):
         """Recolor existing layout.
 
@@ -889,8 +912,10 @@ class WordCloud(object):
         -------
         self
         """
-
-        img = self.to_image()
+        try:
+            img = self.to_image()
+        except:
+            img = self.to_image_bitmap()
         img.save(filename, optimize=True)
         return self
 
@@ -902,8 +927,10 @@ class WordCloud(object):
         image : nd-array size (width, height, 3)
             Word cloud image as numpy matrix.
         """
-        return np.array(self.to_image())
-
+        try:
+            return np.array(self.to_image())
+        except:
+            return np.array(self.to_image_bitmap())
     def __array__(self):
         """Convert to numpy array.
 
@@ -1099,7 +1126,10 @@ class WordCloud(object):
 
         # Embed image, useful for debug purpose
         if embed_image:
-            image = self.to_image()
+            try:
+                image = self.to_image()
+            except:
+                image = self.to_image_bitmap()
             data = io.BytesIO()
             image.save(data, format='JPEG')
             data = base64.b64encode(data.getbuffer()).decode('ascii')
