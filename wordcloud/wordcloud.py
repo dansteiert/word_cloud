@@ -854,7 +854,9 @@ class WordCloud(object):
                 font, orientation=orientation)
             pos = (int(position[1] * self.scale),
                    int(position[0] * self.scale))
-            draw.bitmap(pos, word, fill=color, font=transposed_font)
+            # TODO: replace font
+            # draw.bitmap(pos, word, fill=color, font=transposed_font)
+            draw.bitmap(pos, word, fill=color)
 
         return self._draw_contour(img=img)
 
