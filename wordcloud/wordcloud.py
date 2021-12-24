@@ -615,7 +615,7 @@ class WordCloud(object):
                 # we only have one word. We make it big!
                 font_size = self.height
             else:
-                self.generate_from_frequencies(frequencies[:2],
+                self.generate_from_bitmap_frequencies(frequencies[:2],
                                                max_font_size=self.height)
                 # find font sizes
                 sizes = [x[1] for x in self.layout_]
